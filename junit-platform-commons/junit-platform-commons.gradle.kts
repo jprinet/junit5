@@ -13,13 +13,20 @@ dependencies {
 	compileOnlyApi(libs.apiguardian)
 }
 
+//def fingerprinter = services.get(org.gradle.internal.fingerprint.classpath.ClasspathFingerprinter)
+
 tasks.jar {
 	val release9ClassesDir = sourceSets.mainRelease9.get().output.classesDirs.singleFile
+
 	inputs.dir(release9ClassesDir)
         .withPropertyName("release9ClassesDir")
-        .withNormalizer(ClasspathNormalizer::class)
-        //.withPathSensitivity(PathSensitivity.RELATIVE)
+        .withPathSensitivity(PathSensitivity.RELATIVE)
+
 	doLast {
+        rootSpec.eachFile {
+            println("${this.name} copied to ${this.path}")
+        }
+
 		exec {
 			executable = project.the<JavaToolchainService>().launcherFor(java.toolchain).get()
 				.metadata.installationPath.file("bin/jar").asFile.absolutePath
