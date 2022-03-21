@@ -15,7 +15,10 @@ dependencies {
 
 tasks.jar {
 	val release9ClassesDir = sourceSets.mainRelease9.get().output.classesDirs.singleFile
-	inputs.dir(release9ClassesDir).withPathSensitivity(PathSensitivity.RELATIVE)
+	inputs.dir(release9ClassesDir)
+        .withPropertyName("release9ClassesDir")
+        .withNormalizer(ClasspathNormalizer::class)
+        //.withPathSensitivity(PathSensitivity.RELATIVE)
 	doLast {
 		exec {
 			executable = project.the<JavaToolchainService>().launcherFor(java.toolchain).get()
