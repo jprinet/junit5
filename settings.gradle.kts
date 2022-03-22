@@ -36,7 +36,7 @@ dependencyResolutionManagement {
 	}
 }
 
-val gradleEnterpriseServer = "https://ge.junit.org"
+val gradleEnterpriseServer = "https://ge.solutions-team.gradle.com"
 val isCiServer = System.getenv("CI") != null
 val junitBuildCacheUsername: String? by extra
 val junitBuildCachePassword: String? by extra
@@ -75,17 +75,15 @@ gradleEnterprise {
 }
 
 buildCache {
-	local {
-		isEnabled = !isCiServer
-	}
-	remote<HttpBuildCache> {
-		url = uri("$gradleEnterpriseServer/cache/")
-		isPush = isCiServer && !junitBuildCacheUsername.isNullOrEmpty() && !junitBuildCachePassword.isNullOrEmpty()
-		credentials {
-			username = junitBuildCacheUsername?.ifEmpty { null }
-			password = junitBuildCachePassword?.ifEmpty { null }
-		}
-	}
+    local { isEnabled = false }
+    remote<HttpBuildCache> {
+        url = uri("https://cache-node-solutions.grdev.net/cache/")
+        isPush = isCiServer
+        credentials {
+            username = System.getenv("GRADLE_ENTERPRISE_CACHE_USERNAME")
+            password = System.getenv("GRADLE_ENTERPRISE_CACHE_PASSWORD")
+        }
+    }
 }
 
 val javaVersion = JavaVersion.current()
